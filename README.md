@@ -19,10 +19,7 @@ It runs on GitHub Actions, so nothing of yours has to be switched on.
 
 1. In Telegram, message **@BotFather**, send `/newbot`, and follow the prompts.
 2. Put the token in the app's `.env.local` as `TELEGRAM_BOT_TOKEN=...`, send your bot any message, and run `npm run pp:setup` in the app folder. It saves `TELEGRAM_CHAT_ID` and sends a sample alert.
-3. Give this repository four Actions secrets (each command asks you to paste the value):
-   - `gh secret set TELEGRAM_BOT_TOKEN` and `gh secret set TELEGRAM_CHAT_ID`, the same two values.
-   - `gh secret set WATCHLIST_URL`: your hosted app's address followed by `/api/watchlist`.
-   - `gh secret set WATCHLIST_KEY`: the `WATCHLIST_KEY` line that `npm run host:setup` added to the app's `.env.local`.
+3. Give this repository its secrets: in the app folder, run `npm run pp:secrets`. It copies the Telegram token, your chat id and the watcher's key from `.env.local` to this repository's Actions secrets. (`WATCHLIST_URL`, the hosted app's address followed by `/api/watchlist`, is set separately with `gh secret set WATCHLIST_URL`.)
 
 ## Checking on it
 
