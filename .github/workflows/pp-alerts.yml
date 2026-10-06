@@ -1,0 +1,36 @@
+name: Power-play alerts
+
+# A run starts every half hour through the hours NHL games are played (about noon to
+# 2 AM Eastern). Each run leaves at once unless one of your players' teams is playing
+# or about to, so most runs last a few seconds. The one that finds a game stays with it,
+# checking every 15 seconds, until the night's games are over.
+on:
+  schedule:
+    - cron: "5,35 16-23 * * *"
+    - cron: "5,35 0-6 * * *"
+  workflow_dispatch:
+
+# One watcher at a time. A run that starts while another is watching waits its turn,
+# then takes over if the first one hit GitHub's 6-hour limit.
+concurrency:
+  group: pp-alerts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node pp-watch.mjs
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          WATCHLIST_URL: ${{ secrets.WATCHLIST_URL }}
+          WATCHLIST_KEY: ${{ secrets.WATCHLIST_KEY }}
